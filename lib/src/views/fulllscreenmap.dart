@@ -31,6 +31,20 @@ class _FullScreenMapState extends State<FullScreenMap> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
+        //Simbolos
+        FloatingActionButton(
+          child: Icon(Icons.location_on),
+          onPressed: (){
+            mapController.addSymbol(SymbolOptions(
+              geometry: center,
+              iconSize: 3,
+              iconImage: 'attraction-15',
+              textField: 'Quiero ir aqui',
+              textOffset: Offset(0,2)
+            ));
+          }
+        ),
+        SizedBox(height: 5,),
         //ZoomIn
         FloatingActionButton(
           child: Icon(Icons.zoom_in),
@@ -73,8 +87,9 @@ class _FullScreenMapState extends State<FullScreenMap> {
         initialCameraPosition:
         CameraPosition
         (
+          tilt: 60,
           target: center,
-          zoom: 14
+          zoom: 20
         ),
       );
   }
