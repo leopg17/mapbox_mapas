@@ -10,6 +10,10 @@ class FullScreenMap extends StatefulWidget {
 
 class _FullScreenMapState extends State<FullScreenMap> {
   MapboxMapController mapController;
+  final center = LatLng(40.76815605079246, -73.97439239749016);
+  String selectedStyle = 'mapbox://styles/leopg17/ckhsk9z6q1bk519o9z91yxxx1';
+  final ligaStyle = 'mapbox://styles/leopg17/ckhsk5ybd1a7n1cn2fp6dfbjq';
+  final streetStyle = 'mapbox://styles/leopg17/ckhsk9z6q1bk519o9z91yxxx1';
 
   void _onMapCreated(MapboxMapController controller) {
     mapController = controller;
@@ -18,15 +22,37 @@ class _FullScreenMapState extends State<FullScreenMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MapboxMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition:
-          const CameraPosition
-          (
-            target: LatLng(40.76815605079246, -73.97439239749016),
-            zoom: 14
-          ),
-        )
+      body: crearMapa(),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+            child: Icon(Icons.map),
+            onPressed: (){
+              if (selectedStyle == ligaStyle){
+                selectedStyle = streetStyle;
+              } else {
+                selectedStyle = ligaStyle;
+              }
+
+              setState(() {});
+            }
+          )
+        ],
+      ),
     );
+  }
+
+  MapboxMap crearMapa() {
+    return MapboxMap(
+      styleString: selectedStyle,
+        onMapCreated: _onMapCreated,
+        initialCameraPosition:
+        CameraPosition
+        (
+          target: center,
+          zoom: 14
+        ),
+      );
   }
 }
