@@ -1,5 +1,9 @@
 //Creamos un widget que sea el encargado de mostrar el mapa en pantalla completa
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:mapbox_gl/mapbox_gl.dart';
 
 class FullScreenMap extends StatefulWidget {
@@ -17,6 +21,25 @@ class _FullScreenMapState extends State<FullScreenMap> {
 
   void _onMapCreated(MapboxMapController controller) {
     mapController = controller;
+    _onStyleLoaded();
+  }
+
+  void _onStyleLoaded() {
+    addImageFromAsset("assetImage", "assets/custom-icon.png");
+    addImageFromUrl("networkImage", "https://via.placeholder.com/50");
+  }
+
+  /// Adds an asset image to the currently displayed style
+  Future<void> addImageFromAsset(String name, String assetName) async {
+    final ByteData bytes = await rootBundle.load(assetName);
+    final Uint8List list = bytes.buffer.asUint8List();
+    return mapController.addImage(name, list);
+  }
+
+  /// Adds a network image to the currently displayed style
+  Future<void> addImageFromUrl(String name, String url) async {
+    var response = await http.get(url);
+    return mapController.addImage(name, response.bodyBytes);
   }
 
   @override
@@ -37,8 +60,8 @@ class _FullScreenMapState extends State<FullScreenMap> {
           onPressed: (){
             mapController.addSymbol(SymbolOptions(
               geometry: center,
-              iconSize: 3,
-              iconImage: 'attraction-15',
+              //iconSize: 3,
+              iconImage: 'assetImage',
               textField: 'Quiero ir aqui',
               textOffset: Offset(0,2)
             ));
@@ -72,7 +95,7 @@ class _FullScreenMapState extends State<FullScreenMap> {
             } else {
               selectedStyle = ligaStyle;
             }
-
+            _onStyleLoaded();
             setState(() {});
           }
         )
@@ -89,7 +112,7 @@ class _FullScreenMapState extends State<FullScreenMap> {
         (
           tilt: 60,
           target: center,
-          zoom: 20
+          zoom: 14
         ),
       );
   }
